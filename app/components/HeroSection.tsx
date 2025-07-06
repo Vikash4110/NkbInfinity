@@ -49,7 +49,7 @@ const HeroSection = () => {
           >
             <source src="/tech-video-bg.mp4" type="video/mp4" />
             <Image 
-              src="/vercel.svg" 
+              src="/image.png" 
               alt="Technology background" 
               fill
               className="object-cover"
@@ -57,7 +57,7 @@ const HeroSection = () => {
           </video>
         ) : (
           <Image
-            src="/vercel.svg"
+            src="/image.png"
             alt="Technology background"
             fill
             className="object-cover opacity-70"

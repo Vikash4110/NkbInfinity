@@ -14,7 +14,7 @@ const MissionSection = () => {
             transition={{ duration: 0.6 }}
           >
             <Image
-              src="/mission-image.jpg"
+              src="/net.png"
               alt="NKBINFINITY Mission"
               width={600}
               height={400}
