@@ -1,5 +1,4 @@
-"use client";
-
+'use client'
 import { useState } from "react";
 import { FaCertificate, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { FiBook, FiCalendar, FiClock, FiFileText, FiHash, FiHome, FiSearch, FiUser } from "react-icons/fi";
@@ -51,6 +50,7 @@ export default function Certificate() {
 
       setCertificate(mockCertificate);
     } catch (err) {
+      console.error("Verification error:", err);
       setError("An error occurred while verifying. Please try again.");
     } finally {
       setLoading(false);

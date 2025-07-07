@@ -1,5 +1,6 @@
 'use client'
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { FaChalkboardTeacher, FaGraduationCap, FaHandsHelping, FaIndustry } from "react-icons/fa";
 import { FiAward, FiTarget, FiUsers } from "react-icons/fi";
 
@@ -67,9 +68,11 @@ export default function About() {
               transition={{ duration: 0.6 }}
             >
               <div className="relative rounded-xl overflow-hidden shadow-xl">
-                <img 
+                <Image 
                   src="/net.png" 
                   alt="NKB I Infinity Team" 
+                  width={600}
+                  height={400}
                   className="w-full h-auto object-cover"
                 />
                 <div className="absolute inset-0 bg-blue-900/20"></div>
@@ -198,7 +201,7 @@ export default function About() {
             </div>
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Vision</h2>
             <blockquote className="text-xl text-gray-600 italic mb-8">
-              "To become the most trusted career transformation partner by delivering industry-relevant training that empowers individuals to achieve professional excellence."
+              &ldquo;To become the most trusted career transformation partner by delivering industry-relevant training that empowers individuals to achieve professional excellence.&rdquo;
             </blockquote>
             <div className="mt-8">
               <button className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-md hover:shadow-lg">

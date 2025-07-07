@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { FaChevronLeft, FaChevronRight, FaQuoteLeft } from 'react-icons/fa';

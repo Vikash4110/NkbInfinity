@@ -1,3 +1,4 @@
+'use client'
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
@@ -13,7 +14,7 @@ const FinalCTA = () => {
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Your Career?</h2>
           <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
-            Join thousands of successful professionals who've taken their skills to the next level with NKBINFINITY.
+            Join thousands of successful professionals who&apos;ve taken their skills to the next level with NKBINFINITY.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link

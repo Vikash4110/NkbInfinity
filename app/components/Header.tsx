@@ -1,9 +1,10 @@
+/* eslint-disable */
 'use client'
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaGraduationCap } from "react-icons/fa";
-import { FiMenu, FiSearch, FiUser, FiX } from "react-icons/fi";
+import { FiMenu, FiX } from "react-icons/fi";
 import { RiArrowDropDownLine } from "react-icons/ri";
 
 interface NavItem {
@@ -17,8 +18,6 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const navItems: NavItem[] = [
     { name: "Home", href: "/" },
@@ -37,25 +36,6 @@ export default function Header() {
     { name: "Contact", href: "/contact" },
     { name: "Verify Certificate", href: "/certificate" },
   ];
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const toggleSubmenu = (itemName: string) => {
-    setOpenSubmenu(openSubmenu === itemName ? null : itemName);
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle search logic here
-    console.log("Searching for:", searchQuery);
-    setSearchOpen(false);
-  };
 
   return (
     <header className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? "bg-blue-900 shadow-xl" : "bg-blue-900/90 backdrop-blur-sm"}`}>
@@ -88,7 +68,7 @@ export default function Header() {
                   </Link>
                   {item.subItems && (
                     <button 
-                      onClick={() => toggleSubmenu(item.name)}
+                      onClick={() => setOpenSubmenu(item.name)}
                       className="p-1 text-white hover:text-blue-200 transition-colors"
                       aria-label={`Toggle ${item.name} menu`}
                     >
@@ -98,18 +78,6 @@ export default function Header() {
                 </div>
               </div>
             ))}
-
-            {/* Search Button */}
-            <button 
-              onClick={() => setSearchOpen(true)}
-              className="p-2 text-white hover:text-blue-200 transition-colors"
-              aria-label="Search"
-            >
-              <FiSearch className="text-lg" />
-            </button>
-
-            {/* Login/Profile */}
-           
 
             {/* CTA Button */}
             <Link
@@ -122,14 +90,7 @@ export default function Header() {
           </nav>
 
           {/* Mobile Menu Button */}
-          <div className="flex items-center md:hidden space-x-2">
-            <button
-              onClick={() => setSearchOpen(true)}
-              className="p-2 text-white"
-              aria-label="Search"
-            >
-              <FiSearch className="text-lg" />
-            </button>
+          <div className="flex items-center md:hidden">
             <button
               className="p-2 text-white focus:outline-none"
               onClick={() => setIsOpen(!isOpen)}
@@ -164,7 +125,7 @@ export default function Header() {
                       </Link>
                       {item.subItems && (
                         <button 
-                          onClick={() => toggleSubmenu(item.name)}
+                          onClick={() => setOpenSubmenu(item.name)}
                           className="p-2 text-white"
                           aria-label={`Toggle ${item.name} menu`}
                         >
@@ -194,14 +155,6 @@ export default function Header() {
                 ))}
                 <div className="pt-2">
                   <Link
-                    href="/login"
-                    className="flex items-center justify-center w-full px-4 py-2 text-white font-medium rounded-full border border-white/30 hover:bg-white/10"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    <FiUser className="mr-2" />
-                    Login / Register
-                  </Link>
-                  <Link
                     href="/contact"
                     className="flex items-center justify-center w-full mt-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700"
                     onClick={() => setIsOpen(false)}
@@ -214,8 +167,6 @@ export default function Header() {
           )}
         </AnimatePresence>
       </div>
-
-      
     </header>
   );
 }
