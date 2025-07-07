@@ -2,11 +2,10 @@
 'use client'
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { useState } from "react";
+import { JSX, useState } from "react";
 import { FaGraduationCap } from "react-icons/fa";
 import { FiMenu, FiX } from "react-icons/fi";
 import { RiArrowDropDownLine } from "react-icons/ri";
-
 interface NavItem {
   name: string;
   href: string;

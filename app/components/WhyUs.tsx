@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
+import { JSX } from 'react'; // Explicitly import JSX
 import { FaChalkboardTeacher, FaHandsHelping, FaIndustry, FaUserGraduate } from 'react-icons/fa';
-
 interface Feature {
   icon: JSX.Element;
   title: string;

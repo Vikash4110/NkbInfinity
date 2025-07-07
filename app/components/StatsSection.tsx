@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
+import { JSX } from 'react'; // Explicitly import JSX
 import CountUp from 'react-countup';
 import { FaBriefcase, FaGlobe, FaGraduationCap, FaUserTie } from 'react-icons/fa';
-
 interface StatItem {
   value: number;
   label: string;
