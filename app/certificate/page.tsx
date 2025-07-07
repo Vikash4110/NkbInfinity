@@ -1,5 +1,7 @@
-'use client'
-import { useState } from "react";
+"use client";
+
+import { debounce } from "lodash";
+import { useCallback, useState } from "react";
 import { FaCertificate, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { FiBook, FiCalendar, FiClock, FiFileText, FiHash, FiHome, FiSearch, FiUser } from "react-icons/fi";
 
@@ -12,7 +14,6 @@ interface Certificate {
   institute: string;
   registrationNo: string;
   issuedAt: string;
-  isValid?: boolean;
 }
 
 export default function Certificate() {
@@ -21,40 +22,38 @@ export default function Certificate() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSearch = async () => {
-    if (!certificateNo.trim()) {
-      setError("Please enter a valid certificate number.");
-      return;
-    }
+  const fetchCertificate = useCallback(
+    debounce(async (certNo: string) => {
+      if (!certNo.trim()) {
+        setError("Please enter a valid certificate number.");
+        setLoading(false);
+        return;
+      }
 
-    setError("");
-    setCertificate(null);
-    setLoading(true);
+      setError("");
+      setCertificate(null);
+      setLoading(true);
 
-    try {
-      // Simulate API call with mock data
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Mock response - replace with actual API call
-      const mockCertificate: Certificate = {
-        studentName: "Rahul Sharma",
-        courseName: "AutoCAD Professional",
-        duration: "3 Months",
-        certificateNo: certificateNo,
-        fathersName: "Sanjay Sharma",
-        institute: "NKBINFINITY Training Center",
-        registrationNo: `REG-${Math.floor(1000 + Math.random() * 9000)}`,
-        issuedAt: new Date(2023, 5, 15).toISOString(),
-        isValid: true
-      };
+      try {
+        const response = await fetch(`/api/certificate?certificateNo=${encodeURIComponent(certNo)}`);
+        const data = await response.json();
+        if (response.ok) {
+          setCertificate(data);
+        } else {
+          setError(data.error || "Certificate not found.");
+        }
+      } catch (err) {
+        console.error("Verification error:", err);
+        setError("An error occurred while verifying. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    }, 300),
+    []
+  );
 
-      setCertificate(mockCertificate);
-    } catch (err) {
-      console.error("Verification error:", err);
-      setError("An error occurred while verifying. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+  const handleSearch = () => {
+    fetchCertificate(certificateNo);
   };
 
   return (
@@ -91,7 +90,7 @@ export default function Certificate() {
                         value={certificateNo}
                         onChange={(e) => setCertificateNo(e.target.value)}
                         className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="e.g., NKBCERT20230001"
+                        placeholder="e.g., A2025778"
                       />
                       <FiHash className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     </div>
@@ -139,17 +138,9 @@ export default function Certificate() {
 
                 {certificate ? (
                   <div className="border border-gray-200 rounded-lg overflow-hidden">
-                    <div className={`p-4 text-white flex items-center ${
-                      certificate.isValid ? "bg-green-600" : "bg-red-600"
-                    }`}>
-                      {certificate.isValid ? (
-                        <FaCheckCircle className="mr-2 text-xl" />
-                      ) : (
-                        <FaTimesCircle className="mr-2 text-xl" />
-                      )}
-                      <span className="font-medium">
-                        {certificate.isValid ? "Valid Certificate" : "Invalid Certificate"}
-                      </span>
+                    <div className="p-4 bg-green-600 text-white flex items-center">
+                      <FaCheckCircle className="mr-2 text-xl" />
+                      <span className="font-medium">Valid Certificate</span>
                     </div>
                     
                     <div className="p-4 space-y-4">
@@ -186,10 +177,26 @@ export default function Certificate() {
                       </div>
                       
                       <div className="flex items-start">
+                        <FiUser className="mt-1 mr-3 text-blue-600 flex-shrink-0" />
+                        <div>
+                          <p className="text-sm text-gray-500">Father's Name</p>
+                          <p className="font-medium text-gray-800">{certificate.fathersName}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start">
                         <FiHome className="mt-1 mr-3 text-blue-600 flex-shrink-0" />
                         <div>
                           <p className="text-sm text-gray-500">Institute</p>
                           <p className="font-medium text-gray-800">{certificate.institute}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start">
+                        <FiHash className="mt-1 mr-3 text-blue-600 flex-shrink-0" />
+                        <div>
+                          <p className="text-sm text-gray-500">Registration No.</p>
+                          <p className="font-medium text-gray-800">{certificate.registrationNo}</p>
                         </div>
                       </div>
                       

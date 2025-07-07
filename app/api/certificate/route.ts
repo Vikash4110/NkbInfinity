@@ -37,10 +37,14 @@ export async function GET(request: Request) {
     }
 
     return NextResponse.json(certificate);
-  } catch (error) {
-    console.error("Error fetching certificate:", error);
+  } catch (error: any) {
+    console.error("Error fetching certificate:", {
+      message: error.message,
+      stack: error.stack,
+      code: error.code,
+    });
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Internal server error", details: error.message },
       { status: 500 }
     );
   } finally {
