@@ -96,35 +96,6 @@ export default function Header() {
                     </button>
                   )}
                 </div>
-
-                {/* Submenu Dropdown */}
-                {item.subItems && (
-                  <AnimatePresence>
-                    {openSubmenu === item.name && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl z-50 overflow-hidden"
-                      >
-                        <div className="py-1">
-                          {item.subItems.map((subItem) => (
-                            <Link
-                              key={subItem.name}
-                              href={subItem.href}
-                              className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                              onClick={() => setOpenSubmenu(null)}
-                            >
-                              {subItem.icon && <span className="mr-2">{subItem.icon}</span>}
-                              {subItem.name}
-                            </Link>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                )}
               </div>
             ))}
 
@@ -138,13 +109,7 @@ export default function Header() {
             </button>
 
             {/* Login/Profile */}
-            <Link
-              href="/login"
-              className="p-2 text-white hover:text-blue-200 transition-colors"
-              aria-label="Account"
-            >
-              <FiUser className="text-lg" />
-            </Link>
+           
 
             {/* CTA Button */}
             <Link
@@ -250,51 +215,7 @@ export default function Header() {
         </AnimatePresence>
       </div>
 
-      {/* Search Overlay */}
-      <AnimatePresence>
-        {searchOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
-            onClick={() => setSearchOpen(false)}
-          >
-            <motion.div
-              initial={{ y: -20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -20, opacity: 0 }}
-              className="w-full max-w-xl bg-white rounded-lg shadow-2xl p-4"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <form onSubmit={handleSearch} className="relative">
-                <input
-                  type="text"
-                  placeholder="Search courses, resources..."
-                  className="w-full p-4 pr-12 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  autoFocus
-                />
-                <button
-                  type="submit"
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-600"
-                >
-                  <FiSearch className="text-xl" />
-                </button>
-              </form>
-              <div className="mt-2 text-right">
-                <button
-                  onClick={() => setSearchOpen(false)}
-                  className="text-sm text-gray-500 hover:text-gray-700"
-                >
-                  Press ESC to close
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      
     </header>
   );
 }
