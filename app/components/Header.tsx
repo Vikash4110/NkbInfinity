@@ -2,7 +2,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { JSX, useEffect, useState } from "react";
-import { FaCertificate, FaEnvelope, FaGraduationCap, FaHome } from "react-icons/fa";
+import { FaCertificate, FaEnvelope, FaGraduationCap, FaHome, FaLaptopCode } from "react-icons/fa";
 import { FiMenu, FiX } from "react-icons/fi";
 
 interface NavItem {
@@ -26,6 +26,7 @@ export default function Header() {
 
   const navItems: NavItem[] = [
     { name: "Home", href: "/", icon: <FaHome className="text-lg" /> },
+    { name: "About", href: "/about", icon: <FaLaptopCode className="text-lg" /> },
     { name: "Courses", href: "/courses", icon: <FaGraduationCap className="text-lg" /> },
     { name: "Verify Certificate", href: "/certificate", icon: <FaCertificate className="text-lg" /> },
   ];
