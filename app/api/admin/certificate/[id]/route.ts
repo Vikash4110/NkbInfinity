@@ -24,7 +24,7 @@ interface DecodedToken extends JwtPayload {
 const authenticate = (request: NextRequest): DecodedToken => {
   const token = request.headers.get("Authorization")?.replace("Bearer ", "");
   if (!token) throw new Error("No token provided");
-  
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as DecodedToken;
     if (decoded.role !== "admin") throw new Error("Admin access required");
@@ -43,13 +43,13 @@ const validateCertificate = (data: any): CertificateData => {
     "fathersName",
     "institute",
     "registrationNo",
-    "issuedAt"
+    "issuedAt",
   ];
 
   // Check for missing fields
-  const missingFields = requiredFields.filter(field => !data[field]);
+  const missingFields = requiredFields.filter((field) => !data[field]);
   if (missingFields.length > 0) {
-    throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+    throw new Error(`Missing required fields: ${missingFields.join(", ")}`);
   }
 
   // Validate and parse date
@@ -66,11 +66,11 @@ const validateCertificate = (data: any): CertificateData => {
     "certificateNo",
     "fathersName",
     "institute",
-    "registrationNo"
+    "registrationNo",
   ];
 
   for (const field of stringFields) {
-    if (typeof data[field] !== 'string') {
+    if (typeof data[field] !== "string") {
       throw new Error(`${field} must be a string`);
     }
   }
@@ -83,16 +83,16 @@ const validateCertificate = (data: any): CertificateData => {
     fathersName: data.fathersName.trim(),
     institute: data.institute.trim(),
     registrationNo: data.registrationNo.trim(),
-    issuedAt: issuedDate
+    issuedAt: issuedDate,
   };
 };
 
 export async function GET(request: NextRequest) {
   try {
     authenticate(request);
-    
+
     const certificates = await prisma.certificate.findMany({
-      orderBy: { issuedAt: 'desc' },
+      orderBy: { issuedAt: "desc" },
       select: {
         id: true,
         studentName: true,
@@ -109,7 +109,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(certificates);
   } catch (error: any) {
     return NextResponse.json(
-      { error: error.message === "Invalid token" ? "Unauthorized" : error.message },
+      {
+        error:
+          error.message === "Invalid token" ? "Unauthorized" : error.message,
+      },
       { status: error.message === "Invalid token" ? 401 : 400 }
     );
   } finally {
@@ -143,14 +146,14 @@ export async function POST(request: NextRequest) {
                 institute: true,
                 registrationNo: true,
                 issuedAt: true,
-              }
+              },
             });
             created.push(newCert);
           } catch (error: any) {
             errors.push({
               row: index + 1,
-              certificateNo: cert.certificateNo || 'N/A',
-              error: error.message
+              certificateNo: cert.certificateNo || "N/A",
+              error: error.message,
             });
           }
         }
@@ -159,12 +162,15 @@ export async function POST(request: NextRequest) {
       });
 
       if (results.errors.length > 0) {
-        return NextResponse.json({
-          success: results.created.length,
-          failed: results.errors.length,
-          errors: results.errors.slice(0, 10),
-          certificates: results.created
-        }, { status: 207 });
+        return NextResponse.json(
+          {
+            success: results.created.length,
+            failed: results.errors.length,
+            errors: results.errors.slice(0, 10),
+            certificates: results.created,
+          },
+          { status: 207 }
+        );
       }
 
       return NextResponse.json(results.created);
@@ -183,16 +189,18 @@ export async function POST(request: NextRequest) {
           institute: true,
           registrationNo: true,
           issuedAt: true,
-        }
+        },
       });
 
       return NextResponse.json(certificate);
     }
   } catch (error: any) {
     return NextResponse.json(
-      { error: error.message.includes("Unique constraint") 
-        ? "Certificate number or registration number already exists" 
-        : error.message },
+      {
+        error: error.message.includes("Unique constraint")
+          ? "Certificate number or registration number already exists"
+          : error.message,
+      },
       { status: 400 }
     );
   } finally {
@@ -203,14 +211,16 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     authenticate(request);
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
-    
+    // const { searchParams } = new URL(request.url);
+    // const id = searchParams.get("id");
+    const pathname = request.nextUrl.pathname;
+    const id = pathname.split("/").pop();
+
     if (!id) throw new Error("Certificate ID is required");
-    
+
     const data = await request.json();
     const validatedData = validateCertificate(data);
-    
+
     const certificate = await prisma.certificate.update({
       where: { id },
       data: validatedData,
@@ -229,10 +239,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json(certificate);
   } catch (error: any) {
-    return NextResponse.json(
-      { error: error.message },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: error.message }, { status: 400 });
   } finally {
     await prisma.$disconnect();
   }
@@ -241,21 +248,21 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     authenticate(request);
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
-    
+    const pathname = request.nextUrl.pathname;
+    const id = pathname.split("/").pop(); // Get the last part of the URL
+
+    // const { searchParams } = new URL(request.url);
+    // const id = searchParams.get("id");
+
     if (!id) throw new Error("Certificate ID is required");
-    
+
     await prisma.certificate.delete({
       where: { id },
     });
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    return NextResponse.json(
-      { error: error.message },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: error.message }, { status: 400 });
   } finally {
     await prisma.$disconnect();
   }
