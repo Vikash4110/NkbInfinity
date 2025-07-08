@@ -4,6 +4,7 @@ import Image from "next/image";
 import { FaChalkboardTeacher, FaGraduationCap, FaHandsHelping, FaIndustry } from "react-icons/fa";
 import { FiAward, FiTarget, FiUsers } from "react-icons/fi";
 
+
 export default function About() {
   const features = [
     {

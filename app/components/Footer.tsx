@@ -101,14 +101,14 @@ export default function Footer() {
               </li>
               <li className="flex items-center">
                 <MdPhone className="text-xl mr-3 text-blue-300" />
-                <Link href="tel:+919876543210" className="text-blue-100 hover:text-white">
-                  +91 98765 43210
+                <Link href="tel:+918404859796" className="text-blue-100 hover:text-white">
+                  +91 84048 59796
                 </Link>
               </li>
               <li className="flex items-center">
                 <MdEmail className="text-xl mr-3 text-blue-300" />
-                <Link href="mailto:info@nkinfinity.com" className="text-blue-100 hover:text-white">
-                  info@nkinfinity.com
+                <Link href="mailto:nkbiinfinty.bihar@gmail.com" className="text-blue-100 hover:text-white">
+                  nkbiinfinty.bihar@gmail.com
                 </Link>
               </li>
             </ul>

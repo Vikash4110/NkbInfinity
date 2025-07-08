@@ -1,32 +1,61 @@
 /* eslint-disable */
-'use client'
+'use client';
+import axios from "axios";
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaEnvelope, FaMapMarkerAlt, FaPaperPlane, FaPhone } from "react-icons/fa";
 
+interface FormData {
+  name: string;
+  email: string;
+  phone?: string;
+  message: string;
+}
+
 export default function Contact() {
-  const { register, handleSubmit, formState: { errors } } = useForm();
-  const onSubmit = (data: any) => console.log(data);
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>();
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const onSubmit = async (data: FormData) => {
+    setSuccess("");
+    setError("");
+    setLoading(true);
+
+    try {
+      console.log("Submitting form data:", data); // Debugging log
+      await axios.post("/api/contact", data);
+      setSuccess("Your message has been sent successfully!");
+      reset();
+    } catch (err: any) {
+      console.error("Form submission error:", err.response?.data || err);
+      setError(err.response?.data?.error || "Failed to send message. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const contactInfo = [
     {
       icon: <FaEnvelope className="text-2xl text-blue-600" />,
       title: "Email Us",
-      content: "contact@nkinfinity.com",
-      link: "mailto:contact@nkinfinity.com"
+      content: "nkbiinfinty.bihar@gmail.com",
+      link: "mailto:nkbiinfinty.bihar@gmail.com",
     },
     {
       icon: <FaPhone className="text-2xl text-blue-600" />,
       title: "Call Us",
-      content: "+91-123-456-7890",
-      link: "tel:+911234567890"
+      content: "+918404859796",
+      link: "tel:+918404859796",
     },
     {
       icon: <FaMapMarkerAlt className="text-2xl text-blue-600" />,
       title: "Visit Us",
       content: "123 Infinity Tower, New Delhi, India",
-      link: "https://maps.google.com"
-    }
+      link: "https://maps.google.com",
+    },
   ];
 
   return (
@@ -35,7 +64,7 @@ export default function Contact() {
       <section className="relative py-20 overflow-hidden">
         <div className="absolute inset-0 bg-blue-900/5 z-0"></div>
         <div className="container relative z-10">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -56,7 +85,7 @@ export default function Contact() {
         <div className="container">
           <div className="flex flex-col lg:flex-row gap-12">
             {/* Contact Information */}
-            <motion.div 
+            <motion.div
               className="lg:w-1/2"
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -67,19 +96,16 @@ export default function Contact() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-8">
                   Get in Touch
                 </h2>
-                
                 <div className="space-y-6">
                   {contactInfo.map((item, index) => (
                     <div key={index} className="flex items-start">
-                      <div className="mr-4 mt-1">
-                        {item.icon}
-                      </div>
+                      <div className="mr-4 mt-1">{item.icon}</div>
                       <div>
                         <h3 className="text-lg font-medium text-gray-800 mb-1">
                           {item.title}
                         </h3>
-                        <a 
-                          href={item.link} 
+                        <a
+                          href={item.link}
                           className="text-gray-600 hover:text-blue-600 transition-colors"
                           target="_blank"
                           rel="noopener noreferrer"
@@ -90,7 +116,6 @@ export default function Contact() {
                     </div>
                   ))}
                 </div>
-
                 <div className="mt-12">
                   <h3 className="text-lg font-medium text-gray-800 mb-4">
                     Business Hours
@@ -114,7 +139,7 @@ export default function Contact() {
             </motion.div>
 
             {/* Contact Form */}
-            <motion.div 
+            <motion.div
               className="lg:w-1/2"
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -125,7 +150,16 @@ export default function Contact() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-8">
                   Send Us a Message
                 </h2>
-                
+                {success && (
+                  <div className="mb-6 p-4 rounded border-l-4 bg-green-50 border-green-500">
+                    <p className="text-sm text-green-700">{success}</p>
+                  </div>
+                )}
+                {error && (
+                  <div className="mb-6 p-4 rounded border-l-4 bg-red-50 border-red-500">
+                    <p className="text-sm text-red-700">{error}</p>
+                  </div>
+                )}
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -142,7 +176,6 @@ export default function Contact() {
                       <p className="mt-1 text-sm text-red-600">{errors.name.message as string}</p>
                     )}
                   </div>
-
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                       Email Address
@@ -150,12 +183,12 @@ export default function Contact() {
                     <input
                       id="email"
                       type="email"
-                      {...register("email", { 
+                      {...register("email", {
                         required: "Email is required",
                         pattern: {
                           value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                          message: "Invalid email address"
-                        }
+                          message: "Invalid email address",
+                        },
                       })}
                       className={`w-full px-4 py-3 rounded-lg border ${errors.email ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
                       placeholder="your@email.com"
@@ -164,7 +197,6 @@ export default function Contact() {
                       <p className="mt-1 text-sm text-red-600">{errors.email.message as string}</p>
                     )}
                   </div>
-
                   <div>
                     <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
                       Phone Number
@@ -172,12 +204,19 @@ export default function Contact() {
                     <input
                       id="phone"
                       type="tel"
-                      {...register("phone")}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      {...register("phone", {
+                        pattern: {
+                          value: /^\+?[1-9]\d{1,14}$/,
+                          message: "Invalid phone number",
+                        },
+                      })}
+                      className={`w-full px-4 py-3 rounded-lg border ${errors.phone ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
                       placeholder="+91 1234567890"
                     />
+                    {errors.phone && (
+                      <p className="mt-1 text-sm text-red-600">{errors.phone.message as string}</p>
+                    )}
                   </div>
-
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
                       Your Message
@@ -193,13 +232,34 @@ export default function Contact() {
                       <p className="mt-1 text-sm text-red-600">{errors.message.message as string}</p>
                     )}
                   </div>
-
                   <button
                     type="submit"
-                    className="w-full flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-md hover:shadow-lg"
+                    disabled={loading}
+                    className="w-full flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <FaPaperPlane className="mr-2" />
-                    Send Message
+                    {loading ? (
+                      <>
+                        <svg
+                          className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <FaPaperPlane className="mr-2" />
+                        Send Message
+                      </>
+                    )}
                   </button>
                 </form>
               </div>

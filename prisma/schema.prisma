@@ -8,23 +8,32 @@ datasource db {
 }
 
 model Certificate {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  studentName   String
-  courseName    String
-  duration      String
-  certificateNo String   @unique
-  fathersName   String
-  institute     String
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  studentName    String
+  courseName     String
+  duration       String
+  certificateNo  String   @unique
+  fathersName    String
+  institute      String
   registrationNo String   @unique
-  issuedAt      DateTime
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  issuedAt       DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model User {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  username String   @unique
-  password String
-  role     String   @default("user")
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String   @unique
+  password  String
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+}
+
+model ContactSubmission {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String
+  phone     String?
+  message   String
   createdAt DateTime @default(now())
 }
