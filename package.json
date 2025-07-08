@@ -23,11 +23,13 @@
     "react-countup": "^6.5.3",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.60.0",
-    "react-icons": "^5.5.0"
+    "react-icons": "^5.5.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.20",
     "@types/node": "^20.19.4",
     "@types/react": "^19.1.8",
