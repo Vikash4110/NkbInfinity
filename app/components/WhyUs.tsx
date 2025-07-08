@@ -41,7 +41,7 @@ const WhyChooseUs = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why Choose NKBINFINITY?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why Choose NKBIINFINITY?</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             We bridge the gap between academic learning and industry requirements
           </p>

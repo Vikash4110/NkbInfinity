@@ -49,8 +49,8 @@ export default function Header() {
             >
               <FaGraduationCap className="text-3xl text-blue-300 group-hover:text-blue-200 transition-colors" />
               <span className="text-2xl font-extrabold text-white tracking-tight">
-                <span className="text-blue-300 group-hover:text-blue-200 transition-colors">NKBI</span>
-                <span className="group-hover:text-blue-100 transition-colors"> Infinity</span>
+                <span className="text-blue-300 group-hover:text-blue-200 transition-colors">NKB</span>
+                <span className="group-hover:text-blue-100 transition-colors"> IInfinity</span>
               </span>
             </motion.div>
           </Link>

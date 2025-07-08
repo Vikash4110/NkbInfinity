@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>NKBINFINITY - Industry-Ready Training Programs</title>
+        <title>NKBIINFINITY - Industry-Ready Training Programs</title>
         <meta name="description" content="Comprehensive training programs in IT, finance, healthcare, and engineering. Bridge the gap between academic learning and industry demands." />
         <link rel="icon" href="/favicon.ico" />
       </Head>

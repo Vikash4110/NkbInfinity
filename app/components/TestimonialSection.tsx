@@ -17,7 +17,7 @@ const TestimonialsSection = () => {
       id: 1,
       name: "Rahul Sharma",
       role: "CAD Designer",
-      content: "The AutoCAD course at NKBINFINITY transformed my career. The practical approach and industry-relevant projects helped me transition from a junior drafter to lead designer in just six months.",
+      content: "The AutoCAD course at NKBIINFINITY transformed my career. The practical approach and industry-relevant projects helped me transition from a junior drafter to lead designer in just six months.",
       rating: 5
     },
     {

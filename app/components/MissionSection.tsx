@@ -16,7 +16,7 @@ const MissionSection = () => {
           >
             <Image
               src="/net.png"
-              alt="NKBINFINITY Mission"
+              alt="NKBIINFINITY Mission"
               width={600}
               height={400}
               className="rounded-xl shadow-xl"
@@ -32,7 +32,7 @@ const MissionSection = () => {
           >
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Our Mission</h2>
             <p className="text-lg text-gray-600 mb-6">
-              At NKBINFINITY, we're committed to empowering the next generation of professionals with industry-relevant skills that drive innovation and growth.
+              At NKBIINFINITY, we're committed to empowering the next generation of professionals with industry-relevant skills that drive innovation and growth.
             </p>
             
             <div className="space-y-4">

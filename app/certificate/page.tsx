@@ -69,7 +69,7 @@ export default function Certificate() {
             Certificate Verification Portal
           </h1>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Verify the authenticity of certificates issued by <span className="font-semibold text-blue-600">NKBINFINITY</span>. 
+            Verify the authenticity of certificates issued by <span className="font-semibold text-blue-600">NKBIINFINITY</span>. 
             Enter the certificate number below to validate its details.
           </p>
         </div>
@@ -353,7 +353,7 @@ export default function Certificate() {
           <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <p className="text-sm text-gray-500 mb-2 md:mb-0">
-                © {new Date().getFullYear()} NKBINFINITY. All rights reserved.
+                © {new Date().getFullYear()} NKBIINFINITY. All rights reserved.
               </p>
             
             </div>

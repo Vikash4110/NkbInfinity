@@ -51,7 +51,7 @@ export default function Footer() {
           {/* Logo and Description */}
           <div>
             <Link href="/" className="text-2xl font-bold mb-4 inline-block">
-              <span className="text-blue-300">NKB</span>INFINITY
+              <span className="text-blue-300">NKB</span>IINFINITY
             </Link>
             <p className="text-blue-100 mb-4">
               Empowering students with industry-ready skills through comprehensive training programs.
