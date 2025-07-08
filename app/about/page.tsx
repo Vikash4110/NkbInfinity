@@ -107,7 +107,7 @@ export default function About() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-blue-900/40 to-blue-900/10"></div>
                 <div className="absolute bottom-0 left-0 p-6 text-white">
-                  <h3 className="text-xl font-bold">Our Dedicated Team</h3>
+                  <h3 className="text-xl font-bold">Towards Excellance</h3>
                   <p>Industry experts committed to your success</p>
                 </div>
               </div>
