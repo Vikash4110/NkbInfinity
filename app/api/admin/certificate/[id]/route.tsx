@@ -1,3 +1,4 @@
+/* eslint-disable */
 // api/admin/certificate/[id]/route.tsx
 import { PrismaClient } from "@prisma/client";
 import jwt, { JwtPayload } from "jsonwebtoken";

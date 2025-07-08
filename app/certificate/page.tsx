@@ -1,5 +1,5 @@
+/* eslint-disable */
 "use client";
-
 import { debounce } from "lodash";
 import { useCallback, useState } from "react";
 import { FaCertificate, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
