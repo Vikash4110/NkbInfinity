@@ -1,10 +1,24 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 async function seed() {
   try {
+    // Clear existing data
     await prisma.certificate.deleteMany();
+    await prisma.user.deleteMany();
+
+    // Seed admin user
+    await prisma.user.create({
+      data: {
+        username: "admin",
+        password: await bcrypt.hash("admin123", 10),
+        role: "admin",
+      },
+    });
+
+    // Seed certificates
     await prisma.certificate.createMany({
       data: [
         {
@@ -30,8 +44,12 @@ async function seed() {
       ],
     });
     console.log("Database seeded successfully!");
-  } catch (error) {
-    console.error("Seeding failed:", error);
+  } catch (error: any) {
+    console.error("Seeding failed:", {
+      message: error.message,
+      stack: error.stack,
+      code: error.code,
+    });
     process.exit(1);
   } finally {
     await prisma.$disconnect();
