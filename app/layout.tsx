@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
+import Loader from './components/Loader';
 import "./globals.css";
 
 // ✅ Metadata export
@@ -140,6 +141,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex flex-col min-h-screen">
+        <Loader />
         <Header />
         <main className="flex-grow pt-16">{children}</main>
         <Footer />
