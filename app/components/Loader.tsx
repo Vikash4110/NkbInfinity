@@ -118,7 +118,7 @@ export default function InitialLoader() {
         className="mt-8 text-center"
       >
         <p className="text-blue-400 text-sm font-light tracking-wider">
-          INITIALIZING SYSTEMS
+          INITIALIZING 
         </p>
       </motion.div>
     </motion.div>
