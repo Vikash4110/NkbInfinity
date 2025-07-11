@@ -49,7 +49,7 @@ export default function InitialLoader() {
         className="relative"
       >
         <h1 className="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-200 mb-2">
-          NKBIIINFINITY
+          NKBIINFINITY
         </h1>
         <motion.div
           className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-400 to-blue-600"

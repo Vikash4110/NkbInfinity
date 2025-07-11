@@ -1,4 +1,5 @@
 /* eslint-disable */
+// admin/dashboard/page.tsx
 "use client";
 
 import axios from "axios";

@@ -34,19 +34,23 @@ export async function POST(request: Request) {
     }
 
     const token = jwt.sign(
-      { id: user.id, role: user.role },
+      { id: user.id, username: user.username, role: user.role },
       process.env.JWT_SECRET!,
       { expiresIn: "1h" }
     );
 
-    return NextResponse.json({ token });
-  } catch (error: any) {
-    console.error("Admin login error:", {
-      message: error.message,
-      stack: error.stack,
+    return NextResponse.json({
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+      },
     });
+  } catch (error: any) {
+    console.error("Admin login error:", error);
     return NextResponse.json(
-      { error: "Internal server error", details: error.message },
+      { error: "Internal server error" },
       { status: 500 }
     );
   } finally {

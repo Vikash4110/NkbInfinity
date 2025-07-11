@@ -37,3 +37,28 @@ model ContactSubmission {
   message   String
   createdAt DateTime @default(now())
 }
+
+model Course {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String   @unique
+  category    String
+  duration    String   // 4 weeks, 6 weeks, 8 weeks
+  description String
+  detailedDescription String
+  imageUrl    String
+  price       Float
+  rating      Float    @default(4.5)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  enrollments Enrollment[]
+}
+
+model Enrollment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String
+  phone     String
+  courseId  String   @db.ObjectId
+  course    Course   @relation(fields: [courseId], references: [id])
+  createdAt DateTime @default(now())
+}

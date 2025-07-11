@@ -1,109 +1,106 @@
 /* eslint-disable */
 'use client'
 import { motion } from "framer-motion";
-import { useState } from 'react';
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from 'react';
 import { FaBriefcase, FaChartLine, FaGraduationCap, FaLaptopCode, FaRegStar, FaStar } from "react-icons/fa";
-import { FiAward, FiClock, FiTrendingUp } from "react-icons/fi";
-import { IoMdPricetag } from "react-icons/io";
+import { FiClock } from "react-icons/fi";
+
+interface Course { 
+  id: string;
+  title: string;
+  category: string;
+  duration: string;
+  description: string;
+  imageUrl: string;
+  price: number;
+  rating: number;
+}
 
 export default function Courses() {
-  const courses = [
-    {
-      title: "AutoCAD Professional",
-      industry: "Engineering",
-      duration: "8 Weeks",
-      description: "Master 2D and 3D design for architecture and mechanical engineering applications with industry-standard tools.",
-      icon: <FaGraduationCap className="text-3xl" />,
-      features: ["Hands-on projects", "Industry certification", "Portfolio development"],
-      category: "Engineering",
-      level: "Intermediate",
-      price: "899",
-      rating: 4.8,
-      featured: true
-    },
-    {
-      title: "Financial Analyst Program",
-      industry: "Finance",
-      duration: "16 Weeks",
-      description: "Comprehensive training in financial modeling, investment strategies, and market analysis for global finance careers.",
-      icon: <FaChartLine className="text-3xl" />,
-      features: ["Excel mastery", "Financial modeling", "Real-world case studies"],
-      category: "Finance",
-      level: "Advanced",
-      price: "1,299",
-      rating: 4.9,
-      featured: true
-    },
-    {
-      title: "Healthcare Administration",
-      industry: "Healthcare",
-      duration: "10 Weeks",
-      description: "Develop essential skills for healthcare management, compliance, and operational excellence in medical facilities.",
-      icon: <FaBriefcase className="text-3xl" />,
-      features: ["Regulatory compliance", "Healthcare IT", "Leadership training"],
-      category: "Healthcare",
-      level: "Beginner",
-      price: "749",
-      rating: 4.6
-    },
-    {
-      title: "Full-Stack Development",
-      industry: "IT",
-      duration: "12 Weeks",
-      description: "Build modern web applications using React, Node.js, and MongoDB with agile development methodologies.",
-      icon: <FaLaptopCode className="text-3xl" />,
-      features: ["MERN stack", "REST APIs", "Deployment strategies"],
-      category: "IT",
-      level: "Intermediate",
-      price: "1,099",
-      rating: 4.7,
-      featured: true
-    },
-    {
-      title: "Data Science Fundamentals",
-      industry: "IT",
-      duration: "14 Weeks",
-      description: "Learn Python for data analysis, machine learning algorithms, and data visualization techniques.",
-      icon: <FaLaptopCode className="text-3xl" />,
-      features: ["Python programming", "Pandas & NumPy", "Machine learning basics"],
-      category: "IT",
-      level: "Intermediate",
-      price: "1,199",
-      rating: 4.8
-    },
-    {
-      title: "Digital Marketing Mastery",
-      industry: "Marketing",
-      duration: "6 Weeks",
-      description: "Comprehensive training in SEO, social media marketing, and content strategy for digital platforms.",
-      icon: <FaChartLine className="text-3xl" />,
-      features: ["SEO techniques", "Social media strategy", "Analytics tools"],
-      category: "Marketing",
-      level: "Beginner",
-      price: "699",
-      rating: 4.5
-    }
-  ];
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const response = await fetch('/api/admin/courses');
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Validate the response data structure
+        if (!Array.isArray(data)) {
+          throw new Error('Invalid data format received from API');
+        }
+        
+        setCourses(data);
+      } catch (error) {
+        console.error("Failed to fetch courses:", error);
+        setError(error instanceof Error ? error.message : 'Failed to load courses');
+        setCourses([]); // Ensure courses is always an array
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
+  // Safely calculate category counts
   const categories = [
-    { name: "All", count: courses.length },
-    { name: "Featured", count: courses.filter(c => c.featured).length },
-    { name: "Engineering", count: courses.filter(c => c.category === "Engineering").length },
-    { name: "Finance", count: courses.filter(c => c.category === "Finance").length },
-    { name: "Healthcare", count: courses.filter(c => c.category === "Healthcare").length },
-    { name: "IT", count: courses.filter(c => c.category === "IT").length },
-    { name: "Marketing", count: courses.filter(c => c.category === "Marketing").length }
+    { name: "All", count: courses?.length || 0 },
+    { name: "Mechanical Eng", count: courses?.filter(c => c.category === "Mechanical Eng").length || 0 },
+    { name: "Electrical Eng", count: courses?.filter(c => c.category === "Electrical Eng").length || 0 },
+    { name: "Electronic Eng", count: courses?.filter(c => c.category === "Electronic Eng").length || 0 },
+    { name: "Computer Sci Eng", count: courses?.filter(c => c.category === "Computer Sci Eng").length || 0 },
   ];
 
   const [activeCategory, setActiveCategory] = useState("All");
 
-  const filteredCourses = courses.filter(course => 
-    activeCategory === "All" 
-      ? true 
-      : activeCategory === "Featured" 
-        ? course.featured 
-        : course.category === activeCategory
-  );
+  const filteredCourses = courses?.filter(course => 
+    activeCategory === "All" ? true : course.category === activeCategory
+  ) || [];
+
+  const getCategoryIcon = (category: string) => {
+    switch(category) {
+      case "Mechanical Eng":
+        return <FaBriefcase className="text-3xl" />;
+      case "Electrical Eng":
+        return <FaChartLine className="text-3xl" />;
+      case "Electronic Eng":
+        return <FaLaptopCode className="text-3xl" />;
+      case "Computer Sci Eng":
+        return <FaGraduationCap className="text-3xl" />;
+      default:
+        return <FaGraduationCap className="text-3xl" />;
+    }
+  };
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center p-6 max-w-md mx-auto bg-white rounded-xl shadow-md">
+          <h2 className="text-xl font-bold text-red-600 mb-4">Error Loading Courses</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gradient-to-b from-blue-50 to-white min-h-screen">
@@ -117,15 +114,11 @@ export default function Courses() {
             transition={{ duration: 0.8 }}
             className="text-center max-w-4xl mx-auto"
           >
-            <div className="inline-flex items-center bg-blue-800/30 border border-blue-700 rounded-full px-4 py-1.5 mb-4">
-              <FiAward className="mr-2 text-blue-300" />
-              <span className="text-sm font-medium text-blue-100">Industry-Recognized Certifications</span>
-            </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-              Transform Your <span className="text-blue-300">Career</span> With Our Expert-Led Courses
+              Industry-Focused <span className="text-blue-300">Courses</span>
             </h1>
             <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto leading-relaxed">
-              Gain practical skills and certifications that employers value in today's competitive job market
+              Hands-on training with industry-standard tools and technologies
             </p>
           </motion.div>
         </div>
@@ -154,7 +147,6 @@ export default function Courses() {
                     : "bg-white text-gray-700 hover:bg-gray-100 shadow-md"
                 } flex items-center`}
               >
-                {category.name === "Featured" && <FaStar className="mr-2 text-yellow-400" />}
                 {category.name} 
                 <span className="ml-2 bg-blue-100/20 text-xs px-2 py-0.5 rounded-full">
                   {category.count}
@@ -164,9 +156,14 @@ export default function Courses() {
           </motion.div>
 
           {/* Courses Grid */}
-          {filteredCourses.length === 0 ? (
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+          ) : filteredCourses.length === 0 ? (
             <div className="text-center py-12">
-              <h3 className="text-xl font-medium text-gray-600">No courses found in this category</h3>
+              <h3 className="text-xl font-medium text-gray-600">No courses found</h3>
+              <p className="text-gray-500 mb-4">We couldn't find any courses matching your criteria</p>
               <button 
                 onClick={() => setActiveCategory("All")}
                 className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
@@ -178,30 +175,32 @@ export default function Courses() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredCourses.map((course, index) => (
                 <motion.div
-                  key={course.title}
+                  key={course.id}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: index * 0.1 }}
                   whileHover={{ y: -8 }}
-                  className={`bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 border border-gray-100 ${
-                    course.featured ? "ring-2 ring-blue-500" : ""
-                  }`}
+                  className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 border border-gray-100"
                 >
-                  {course.featured && (
-                    <div className="bg-blue-600 text-white text-xs font-bold px-3 py-1.5 absolute top-4 right-4 rounded-full flex items-center">
-                      <FaStar className="mr-1" /> Featured
-                    </div>
-                  )}
+                  <div className="relative h-48 w-full">
+                    <Image 
+                      src={course.imageUrl || "/course-placeholder.jpg"} 
+                      alt={course.title}
+                      layout="fill"
+                      objectFit="cover"
+                      className="w-full h-full"
+                    />
+                  </div>
                   <div className="p-6 pb-4">
                     <div className="flex justify-center mb-5">
                       <div className="bg-blue-100 p-4 rounded-full text-blue-600">
-                        {course.icon}
+                        {getCategoryIcon(course.category)}
                       </div>
                     </div>
                     <div className="text-center mb-4">
                       <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2.5 py-0.5 rounded-full mb-2">
-                        {course.level}
+                        {course.category}
                       </span>
                       <h3 className="text-xl font-bold text-gray-900 mb-2">
                         {course.title}
@@ -209,9 +208,6 @@ export default function Courses() {
                       <div className="flex items-center justify-center text-sm text-gray-500 mb-3">
                         <FiClock className="mr-1.5" />
                         <span>{course.duration}</span>
-                        <span className="mx-2">•</span>
-                        <FiTrendingUp className="mr-1.5" />
-                        <span>{course.industry}</span>
                       </div>
                       <div className="flex items-center justify-center mb-4">
                         {[...Array(5)].map((_, i) => (
@@ -227,26 +223,15 @@ export default function Courses() {
                     <p className="text-gray-600 text-center mb-5">
                       {course.description}
                     </p>
-                    <div className="space-y-3 mb-6">
-                      {course.features.map((feature, i) => (
-                        <div key={i} className="flex items-start">
-                          <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                          </svg>
-                          <span className="text-gray-700">{feature}</span>
-                        </div>
-                      ))}
-                    </div>
                   </div>
                   <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                    <div className="flex justify-between items-center mb-4">
-                      <div className="flex items-center text-lg font-bold text-gray-900">
-                        <IoMdPricetag className="mr-1.5 text-blue-600" />
-                        {course.price}
+                    <div className="flex justify-between items-center">
+                      <div className="text-lg font-bold text-gray-900">
+                        ${course.price.toFixed(2)}
                       </div>
-                      <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-md hover:shadow-lg">
-                        Enroll Now
-                      </button>
+                      <Link href={`/courses/${course.id}`} className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-md hover:shadow-lg">
+                        View Course
+                      </Link>
                     </div>
                   </div>
                 </motion.div>
@@ -255,8 +240,6 @@ export default function Courses() {
           )}
         </div>
       </section>
-
-      
     </div>
   );
 }

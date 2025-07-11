@@ -9,7 +9,8 @@
     "types": [
       "react",
       "react-dom",
-      "node"
+      "node",
+      "next/types"
     ],
     "allowJs": true,
     "skipLibCheck": true,
