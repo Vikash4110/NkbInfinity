@@ -21,8 +21,8 @@ export default function Home() {
         <HeroSection />
         <WhyChooseUs />
         <StatsSection />
-        <PopularCourses />
         <MissionSection />
+        <PopularCourses />
         <TestimonialsSection />
         <FinalCTA />
       </main>
