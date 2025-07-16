@@ -76,76 +76,79 @@ export default function AdminDashboard() {
     }
   };
 
-  const validateForm = () => {
-    const requiredFields = [
-      { field: "studentName", name: "Student name" },
-      { field: "courseName", name: "Course name" },
-      { field: "duration", name: "Duration" },
-      { field: "certificateNo", name: "Certificate number" },
-      { field: "fathersName", name: "Father's name" },
-      { field: "institute", name: "Institute" },
-      { field: "registrationNo", name: "Registration number" },
-      { field: "issuedAt", name: "Issued date" }
-    ];
+ const validateForm = () => {
+  const requiredFields = [
+    { field: "studentName", name: "Student name" },
+    { field: "courseName", name: "Course name" },
+    { field: "duration", name: "Duration" },
+    { field: "certificateNo", name: "Certificate number" },
+    { field: "fathersName", name: "Father's name" },
+    { field: "institute", name: "Institute" },
+    { field: "registrationNo", name: "Registration number" },
+    { field: "issuedAt", name: "Issued date" }
+  ];
 
-    for (const {field, name} of requiredFields) {
-      if (!form[field as keyof typeof form]?.trim()) {
-        return `${name} is required`;
-      }
+  for (const {field, name} of requiredFields) {
+    if (!form[field as keyof typeof form]?.trim()) {
+      return `${name} is required`;
+    }
+  }
+
+  if (isNaN(new Date(form.issuedAt).getTime())) {
+    return "Valid issued date is required (YYYY-MM-DD)";
+  }
+
+  return null;
+};
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError("");
+  setSuccess("");
+  setLoading(true);
+
+  const validationError = validateForm();
+  if (validationError) {
+    setError(validationError);
+    setLoading(false);
+    return;
+  }
+
+  try {
+    const payload = {
+      studentName: form.studentName.trim(),
+      courseName: form.courseName.trim(),
+      duration: form.duration.trim(),
+      certificateNo: form.certificateNo.trim(),
+      fathersName: form.fathersName.trim(),
+      institute: form.institute.trim(),
+      registrationNo: form.registrationNo.trim(),
+      issuedAt: new Date(form.issuedAt).toISOString(),
+    };
+
+    if (editingId) {
+      await axios.put(`/api/admin/certificate/${editingId}`, payload, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      setSuccess("Certificate updated successfully");
+    } else {
+      await axios.post("/api/admin/certificates", payload, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      setSuccess("Certificate created successfully");
     }
 
-    if (isNaN(new Date(form.issuedAt).getTime())) {
-      return "Valid issued date is required (YYYY-MM-DD)";
-    }
-
-    return null;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-    setLoading(true);
-
-    const validationError = validateForm();
-    if (validationError) {
-      setError(validationError);
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const payload = {
-        studentName: form.studentName.trim(),
-        courseName: form.courseName.trim(),
-        duration: form.duration.trim(),
-        certificateNo: form.certificateNo.trim(),
-        fathersName: form.fathersName.trim(),
-        institute: form.institute.trim(),
-        registrationNo: form.registrationNo.trim(),
-        issuedAt: new Date(form.issuedAt).toISOString(),
-      };
-
-      if (editingId) {
-        await axios.put(`/api/admin/certificate/${editingId}`, payload, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
-        setSuccess("Certificate updated successfully");
-      } else {
-        await axios.post("/api/admin/certificates", payload, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
-        setSuccess("Certificate created successfully");
-      }
-
-      resetForm();
-      fetchCertificates();
-    } catch (err: any) {
-      setError(err.response?.data?.error || "Failed to save certificate");
-    } finally {
-      setLoading(false);
-    }
-  };
+    resetForm();
+    fetchCertificates();
+  } catch (err: any) {
+    // Update error message handling
+    setError(err.response?.data?.error.includes("Certificate number") 
+      ? "Certificate number already exists" 
+      : "Failed to save certificate");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleBulkUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();

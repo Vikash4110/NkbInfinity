@@ -217,18 +217,16 @@ async function handleSingleCreate(data: SingleCertificateRequest) {
 
   const normalizedData = normalizeCertificateData(data);
 
+  // Only check for duplicate certificateNo, not registrationNo
   const existing = await prisma.certificate.findFirst({
     where: {
-      OR: [
-        { certificateNo: normalizedData.certificateNo },
-        { registrationNo: normalizedData.registrationNo },
-      ],
+      certificateNo: normalizedData.certificateNo,
     },
   });
 
   if (existing) {
     return NextResponse.json(
-      { error: "Certificate number or registration number already exists" },
+      { error: "Certificate number already exists" }, // Updated error message
       { status: 400 }
     );
   }
@@ -250,42 +248,35 @@ async function handleSingleCreate(data: SingleCertificateRequest) {
 
   return NextResponse.json(certificate);
 }
+ 
 
 async function checkForDuplicates(certificates: CertificateData[]) {
   const certificateNos = certificates.map((c) => c.certificateNo);
-  const registrationNos = certificates.map((c) => c.registrationNo);
 
   const existing = await prisma.certificate.findMany({
     where: {
-      OR: [
-        { certificateNo: { in: certificateNos } },
-        { registrationNo: { in: registrationNos } },
-      ],
+      certificateNo: { in: certificateNos },
     },
     select: {
       certificateNo: true,
-      registrationNo: true,
     },
   });
 
   const duplicateCertNos = existing.map((c) => c.certificateNo);
-  const duplicateRegNos = existing.map((c) => c.registrationNo);
 
   const duplicates = [
     ...new Set([
       ...duplicateCertNos.filter((no) => certificateNos.includes(no)),
-      ...duplicateRegNos.filter((no) => registrationNos.includes(no)),
     ]),
   ];
 
   const uniqueCertificates = certificates.filter(
-    (cert) => 
-      !duplicateCertNos.includes(cert.certificateNo) &&
-      !duplicateRegNos.includes(cert.registrationNo)
+    (cert) => !duplicateCertNos.includes(cert.certificateNo)
   );
 
   return { duplicates, uniqueCertificates };
 }
+
 
 async function fetchCreatedCertificates(certificates: CertificateData[]) {
   const certificateNos = certificates.map((c) => c.certificateNo);

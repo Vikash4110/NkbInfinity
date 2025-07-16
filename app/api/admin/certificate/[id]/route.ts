@@ -134,6 +134,18 @@ export async function POST(request: NextRequest) {
         for (const [index, cert] of data.certificates.entries()) {
           try {
             const validated = validateCertificate(cert);
+
+            // Check only for duplicate certificateNo
+            const existing = await tx.certificate.findFirst({
+              where: { certificateNo: validated.certificateNo },
+            });
+
+            if (existing) {
+              throw new Error(
+                `Certificate number ${validated.certificateNo} already exists`
+              );
+            }
+
             const newCert = await tx.certificate.create({
               data: validated,
               select: {
@@ -177,6 +189,16 @@ export async function POST(request: NextRequest) {
     } else {
       // Process single certificate
       const validatedData = validateCertificate(data);
+
+      // Check only for duplicate certificateNo
+      const existing = await prisma.certificate.findFirst({
+        where: { certificateNo: validatedData.certificateNo },
+      });
+
+      if (existing) {
+        throw new Error("Certificate number already exists");
+      }
+
       const certificate = await prisma.certificate.create({
         data: validatedData,
         select: {
@@ -198,48 +220,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         error: error.message.includes("Unique constraint")
-          ? "Certificate number or registration number already exists"
+          ? "Certificate number already exists"
           : error.message,
       },
       { status: 400 }
     );
-  } finally {
-    await prisma.$disconnect();
-  }
-}
-
-export async function PUT(request: NextRequest) {
-  try {
-    authenticate(request);
-    // const { searchParams } = new URL(request.url);
-    // const id = searchParams.get("id");
-    const pathname = request.nextUrl.pathname;
-    const id = pathname.split("/").pop();
-
-    if (!id) throw new Error("Certificate ID is required");
-
-    const data = await request.json();
-    const validatedData = validateCertificate(data);
-
-    const certificate = await prisma.certificate.update({
-      where: { id },
-      data: validatedData,
-      select: {
-        id: true,
-        studentName: true,
-        courseName: true,
-        duration: true,
-        certificateNo: true,
-        fathersName: true,
-        institute: true,
-        registrationNo: true,
-        issuedAt: true,
-      },
-    });
-
-    return NextResponse.json(certificate);
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 400 });
   } finally {
     await prisma.$disconnect();
   }
