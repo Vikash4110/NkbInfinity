@@ -252,3 +252,69 @@ export async function DELETE(request: NextRequest) {
     await prisma.$disconnect();
   }
 }
+
+export async function PUT(request: NextRequest) {
+  try {
+    authenticate(request);
+
+    // Extract ID from URL path
+    const pathname = request.nextUrl.pathname;
+    const id = pathname.split("/").pop();
+
+    if (!id) {
+      throw new Error("Certificate ID is required");
+    }
+
+    const data = await request.json();
+    const validatedData = validateCertificate(data);
+
+    // Check if certificate exists
+    const existingCert = await prisma.certificate.findUnique({
+      where: { id },
+    });
+
+    if (!existingCert) {
+      throw new Error("Certificate not found");
+    }
+
+    // Check for duplicate certificateNo (if changed)
+    if (validatedData.certificateNo !== existingCert.certificateNo) {
+      const duplicate = await prisma.certificate.findFirst({
+        where: { certificateNo: validatedData.certificateNo },
+      });
+
+      if (duplicate) {
+        throw new Error("Certificate number already exists");
+      }
+    }
+
+    const updatedCertificate = await prisma.certificate.update({
+      where: { id },
+      data: validatedData,
+      select: {
+        id: true,
+        studentName: true,
+        courseName: true,
+        duration: true,
+        certificateNo: true,
+        fathersName: true,
+        institute: true,
+        registrationNo: true,
+        issuedAt: true,
+      },
+    });
+
+    return NextResponse.json(updatedCertificate);
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error: error.message.includes("Unique constraint")
+          ? "Certificate number already exists"
+          : error.message,
+      },
+      { status: 400 }
+    );
+  } finally {
+    await prisma.$disconnect();
+  }
+}
